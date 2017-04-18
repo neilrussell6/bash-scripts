@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # create-data
-# v0.3
-# added support for semi-colon delimited arrays in body config eg. [33;77;aa]
-# which will select a random value from that array
+# v0.4
+# added support for triple point delimited range arrays in body config eg. [10...10000]
+# which will select a random number in that range
 #
 # usage:
-# awk -f create-data.awk config-example-2.txt > data.csv rows=1000
+# awk -f create-data.awk config-example-4.txt > data.csv rows=1000
 # for execution time prepend script with time
 
 BEGIN {
@@ -40,19 +40,42 @@ END {
             # array vars
             if (match(col, /^\[/)) {
 
-                # trim brackets from col
-                col_str = substr(col, 2, length(col) - 2);
+                # array of specific values
+                if (match(col, /\;/)) {
 
-                # convert col to array
-                split(col_str, col_arr, ";");
+                    # trim brackets from col
+                    col_str = substr(col, 2, length(col) - 2);
 
-                # get random index
-                min = 1;
-                max = length(col_arr);
-                col_i = int(min + rand() * (max - min + 1));
+                    # convert col to array
+                    split(col_str, col_arr, ";");
 
-                # set column
-                col = col_arr[ col_i ];
+                    # get random index
+                    min = 1;
+                    max = length(col_arr);
+                    col_i = int(min + rand() * (max - min + 1));
+
+                    # set column
+                    col = col_arr[ col_i ];
+                }
+
+                # range array
+                else if (match(col, /\.{3}/)) {
+
+                    # trim brackets from col
+                    col_str = substr(col, 2, length(col) - 2);
+
+                    # convert col to array
+                    split(col_str, col_arr, /\.{3}/);
+
+                    # get random number between range
+
+                    min = col_arr[1];
+                    max = col_arr[2];
+                    col_value = int(min + rand() * (max - min + 1));
+
+                    # set column
+                    col = col_value;
+                }
             }
 
             line = line "," col;

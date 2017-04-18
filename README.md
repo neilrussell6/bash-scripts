@@ -74,6 +74,26 @@ id,foreign_id,name,date,price
 ...
 ```
 
+#### Example 4 :: random number in range
+
+Given the following config template:
+
+```
+name,points
+bobby,[1...50000]
+```
+
+The command above will create a `data.csv` file with 1000 rows, auto-incrementing an id column as well as randomly selecting a number for each range column, so that the result looks something like this:
+
+```
+id,name,points
+1,bobby,11890
+2,bobby,14554
+3,bobby,42291
+4,bobby,7611
+...
+```
+
 License
 =======
 

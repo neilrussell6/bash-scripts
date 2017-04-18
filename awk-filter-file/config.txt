@@ -1,3 +1,2 @@
-city
-Poynette,Ball Ground,Rio De Janeiro,Raseiniu
-city,latitude,longitude
+Johannesburg,City of London,Bangkok,Chennai,Kolkata,Delhi,Manila,Jakarta,Karachi,Baghdadi,Taipei,Mumbai,Tehran,Shanghai,Istanbul,Cairo,Sydney,Riyadh,San Francisco
+longitude,latitude,full_name,population

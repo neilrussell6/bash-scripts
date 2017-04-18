@@ -114,42 +114,35 @@ awk -f create-data.awk config.txt > data.csv rows=1000
 Config explained
 ----------------
 
-> The first row of the config is the column to use when filtering.
-> The second row contains the values to filter by.
-> The third row contains the column to capture in the result.
+> The first row contains the values to filter by.
+> The second row contains the column to capture in the result.
 
 So the following config:
 
 ```
-city
-Poynette,Ball Ground,Rio De Janeiro,Raseiniu
-city,latitude,longitude
+Johannesburg,London,Bangkok
+longitude,latitude,city
 ```
 
 > Translates to:
-> Grab the following columns (city, latitude & longitude) from all rows with a **city** column that matches any of (Poynette, Ball Ground, Rio De Janeiro or Raseiniu) 
+> Grab the following columns (latitude, longitude & city) from all rows with values that match any of these (Johannesburg, London or Bangkok) 
 
-Example 1 :: simple config
---------------------------
+Example
+-------
 
-Given a data file with some geo data,
-And the following config:
-
-```
-city
-Poynette,Ball Ground,Rio De Janeiro,Raseiniu
-city,latitude,longitude
-```
-
-The command above will create an `output.csv` file with 4 rows (those matching the cities in the config) with 3 columns (those specified in the config), so the result looks something like this:
+So given a data file with some geo data, and the following config:
 
 ```
-city,latitude,longitude
-Poynette,43.3938,-89.3968
-Ball Ground,34.341,-84.349
-Rio De Janeiro,-22.9,-43.2333
-Raseiniu,55.3736,23.1217
+Johannesburg,London,Bangkok
+longitude,latitude,full_name
 ```
+
+The command above will create an `output.csv` file with a row for each matching city (as specified in the config), with 3 columns (those specified in the config), so the result looks something like this:
+
+```
+28.0436,-26.2023,Johannesburg,2026469
+-0.09184,51.5128,London,7556900
+100.501,13.754,Bangkok,5104476
 
 License
 =======

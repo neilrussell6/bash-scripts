@@ -1,14 +1,38 @@
 #!/usr/bin/env bash
 
 # filter-file
-# v0.1
+# v0.2
 #
 # usage:
 # awk -f filter-file.awk CONFIG_FILE DATA_FILE > OUTPUT_FILE
 # eg.
-# awk -f filter-file.awk config.txt data.csv > output.csv
+# awk -f filter-file.awk config.txt data.txt > output.csv
 #
 # for execution time prepend script with time
+
+# returns the left keys for all intersecting values, but in order or the right array
+function intersectionKeysLeft(arr1, arr2, result) {
+    for (k2 in arr2) {
+        for (k1 in arr1) {
+            if (arr1[k1] == arr2[k2]) {
+                result_str = result_str k1 ",";
+            }
+        }
+    }
+    gsub(/\,$/, "", result_str);
+    split(result_str, result, ",");
+}
+
+# identifies values in a delimited string and returns filtered string
+function filterDelimitedValuesByIndexArray(source_str, indices, delimiter) {
+    result_str = "";
+    split(source_str, source_arr, delimiter);
+    for (i in indices) {
+        result_str = result_str source_arr[ indices[i] ] delimiter;
+    }
+    gsub(/\,$/, "", result_str);
+    return result_str;
+}
 
 BEGIN {
     FS = ",";
@@ -18,94 +42,39 @@ BEGIN {
     # config file
     if (ARGIND == 1) {
 
-        # get search column
+        # get search values as regex
         if (FNR == 1) {
-            search_column = $1;
+            search_regex = $0;
+            gsub(/\,/, ",|,", search_regex);
+            search_regex = "," search_regex ",";
         }
 
-        # get search values
+        # get grab columns as array
         if (FNR == 2) {
-            split($0, search_values, ",");
-
-        }
-
-        # get grab columns
-        if (FNR == 3) {
-            split($0, grab_columns, ",");
+            grab_columns_str = $0;
+            split(grab_columns_str, grab_columns_arr, ",");
         }
     }
 
     # data file
     if (ARGIND == 2) {
 
-        # heading row
+        # get grab column indices
         if (FNR == 1) {
+            split($0, columns_arr, ",");
+            intersectionKeysLeft(columns_arr, grab_columns_arr, grab_column_indices_arr);
 
-            # loop columns and find search column's index & grab column indices
-            for (i=1;i<=NF;i++) {
-
-                # find search column's index
-                if ($i == search_column) {
-                    search_column_index = i;
-                }
-
-                # find grab column indices
-                for (j = 1; j < length(grab_columns) + 1; j++) {
-
-                    if ($i == grab_columns[j]) {
-                        grab_column_indices_str = grab_column_indices_str i ",";
-                    }
-                }
-            }
-
-            # convert grab column indices to array
-            gsub(/\,$/, "", grab_column_indices_str);
-
-            split(grab_column_indices_str, grab_column_indices, ",");
+            # print headings
+            # print grab_columns_str;
         }
 
-        # body rows
-        else {
+        # match
+        else if (match($0, search_regex)) {
 
-            # loop columns and search_values and extract grab column values for matches
-            for (i=1;i<=NF;i++) {
-
-                for (j = 1; j < length(search_values) + 1; j++) {
-                    if ($i == search_values[j]) {
-                        match_data = match_data $0 ";";
-                    }
-                }
-            }
+            # print filtered body
+            print filterDelimitedValuesByIndexArray($0, grab_column_indices_arr, ",");
         }
     }
 }
 END {
-
-    # print headings
-    for (i = 1; i < length(grab_columns) + 1; i++) {
-        headings = headings grab_columns[i] ",";
-    }
-    gsub(/\,$/, "", headings);
-    print headings;
-
-    # print body
-    split(match_data, match_data_rows_arr, ";");
-
-    for (i = 1; i < length(match_data_rows_arr) + 1; i++) {
-
-        row = "";
-        split(match_data_rows_arr[i], match_data_col_arr, ",");
-
-        for (j = 1; j < length(match_data_col_arr) + 1; j++) {
-
-            for (k = 1; k < length(grab_column_indices) + 1; k++) {
-
-                if (j == grab_column_indices[k]) {
-                    row = row match_data_col_arr[j] ",";
-                }
-            }
-        }
-        gsub(/\,$/, "", row);
-        print row;
-    }
 }

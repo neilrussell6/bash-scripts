@@ -108,7 +108,7 @@ Usage
 -----
 
 ```bash
-awk -f create-data.awk config.txt > data.csv rows=1000
+awk -f filter-file.awk config.txt data.txt > output.csv
 ```
 
 Config explained

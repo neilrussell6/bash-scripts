@@ -54,6 +54,26 @@ id,static_fk,name,incrementing_fk,interpolated_incrementing_fk
 ...
 ```
 
+#### Example 3 :: random item from array
+
+Given the following config template:
+
+```
+foreign_id,name,date,price
+[33;44],bobby,[2016-12-11 01:00:00;2016-12-10 02:00:00;2016-12-09 03:00:00],[50.00;100.00;200.00]
+```
+
+The command above will create a `data.csv` file with 1000 rows, auto-incrementing an id column as well as randomly selecting an item from each array column, so that the result looks something like this:
+
+```
+id,foreign_id,name,date,price
+1,33,bobby,2016-12-11 01:00:00,200.00
+2,33,bobby,2016-12-10 02:00:00,50.00
+3,44,bobby,2016-12-11 01:00:00,100.00
+4,33,bobby,2016-12-10 02:00:00,100.00
+...
+```
+
 License
 =======
 

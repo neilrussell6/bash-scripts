@@ -3,8 +3,10 @@ BASH / AWK Scripts
 
 > A collection of BASH / AWK scripts I've written to perform small tasks in my projects and for educational purposes.
 
-create-data
-===========
+AWK create-data
+===============
+
+> A script that generates a data file (comma delimited txt or csv file etc), using a provided config. Supports config for auto-incrementing column values, random item from array and random number in range.    
 
 Usage
 -----
@@ -13,8 +15,8 @@ Usage
 awk -f create-data.awk config.txt > data.csv rows=1000
 ```
 
-#### Example 1 :: simple config
-
+Example 1 :: simple config
+--------------------------
 
 Given the following config template:
 
@@ -34,7 +36,8 @@ id,foreign_id,name
 ...
 ```
 
-#### Example 2 :: id variable
+Example 2 :: id variable
+------------------------
 
 Given the following config template:
 
@@ -54,7 +57,8 @@ id,static_fk,name,incrementing_fk,interpolated_incrementing_fk
 ...
 ```
 
-#### Example 3 :: random item from array
+Example 3 :: random item from array
+-----------------------------------
 
 Given the following config template:
 
@@ -74,7 +78,8 @@ id,foreign_id,name,date,price
 ...
 ```
 
-#### Example 4 :: random number in range
+Example 4 :: random number in range
+-----------------------------------
 
 Given the following config template:
 
@@ -92,6 +97,58 @@ id,name,points
 3,bobby,42291
 4,bobby,7611
 ...
+```
+
+AWK filter-file
+===============
+
+> A script that filters the content of a given file using a provided config.     
+
+Usage
+-----
+
+```bash
+awk -f create-data.awk config.txt > data.csv rows=1000
+```
+
+Config explained
+----------------
+
+> The first row of the config is the column to use when filtering.
+> The second row contains the values to filter by.
+> The third row contains the column to capture in the result.
+
+So the following config:
+
+```
+city
+Poynette,Ball Ground,Rio De Janeiro,Raseiniu
+city,latitude,longitude
+```
+
+> Translates to:
+> Grab the following columns (city, latitude & longitude) from all rows with a **city** column that matches any of (Poynette, Ball Ground, Rio De Janeiro or Raseiniu) 
+
+Example 1 :: simple config
+--------------------------
+
+Given a data file with some geo data,
+And the following config:
+
+```
+city
+Poynette,Ball Ground,Rio De Janeiro,Raseiniu
+city,latitude,longitude
+```
+
+The command above will create an `output.csv` file with 4 rows (those matching the cities in the config) with 3 columns (those specified in the config), so the result looks something like this:
+
+```
+city,latitude,longitude
+Poynette,43.3938,-89.3968
+Ball Ground,34.341,-84.349
+Rio De Janeiro,-22.9,-43.2333
+Raseiniu,55.3736,23.1217
 ```
 
 License

@@ -1,0 +1,2 @@
+static_fk,name,incrementing_fk,interpolated_incrementing_fk
+33,bobby,{id},aaa{id}

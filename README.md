@@ -13,6 +13,9 @@ Usage
 awk -f create-data.awk config.txt > data.csv rows=1000
 ```
 
+#### Example 1 :: simple config
+
+
 Given the following config template:
 
 ```
@@ -28,6 +31,26 @@ id,foreign_id,name
 2,33,bobby
 3,33,bobby
 4,33,bobby
+...
+```
+
+#### Example 2 :: id variable
+
+Given the following config template:
+
+```
+static_fk,name,incrementing_fk,interpolated_incrementing_fk
+33,bobby,{id},aaa{id}
+```
+
+The command above will create a `data.csv` file with 1000 rows, auto-incrementing an id column as well as all {id} variables, so that the result looks something like this:
+
+```
+id,static_fk,name,incrementing_fk,interpolated_incrementing_fk
+1,33,bobby,1,aaa1
+2,33,bobby,2,aaa2
+3,33,bobby,3,aaa3
+4,33,bobby,4,aaa4
 ...
 ```
 

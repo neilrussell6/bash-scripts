@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # create-data
-# v0.1
-# provide a comma delimited config file with 2 rows: headings and body config
+# v0.2
+# added support for {id} variable
 #
 # usage:
-# awk -f create-data.awk config.txt > data.csv rows=1000
+# awk -f create-data.awk config-example-2.txt > data.csv rows=1000
 # for execution time prepend script with time
 
 BEGIN {
@@ -17,12 +17,28 @@ BEGIN {
         headings = $0;
     }
     if (NR == 2) {
-        body = $0;
+        split($0,body,",");
     }
 }
 END {
-    printf "%s,%s\n", "id", headings;
+    print "id," headings;
     for (i = 0; i < rows; ++i) {
-        printf "%d,%s\n", (i+1), body;
+        id = i + 1;
+        line = id;
+
+        # columns
+        for (j = 1; j < length(body) + 1; j++) {
+
+            col = body[j];
+
+            # replace id vars
+            if (match(col, /\{id\}/)) {
+                gsub(/\{id\}/, id, col);
+            }
+
+            line = line "," col;
+        }
+
+        print line;
     }
 }
